@@ -2,8 +2,9 @@
   "name": "i18next-google-sheet",
   "version": "0.1.0",
   "description": "",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
+    "build": "rimraf ./lib && tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -14,5 +15,10 @@
     "lodash": "^4.17.21",
     "mkdirp": "^1.0.4",
     "yargs": "^17.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.3",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.8.4"
   }
 }

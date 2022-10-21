@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "CommonJS",
+    "isolatedModules": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "outDir": "lib",
+    "rootDir": "src",
+    "types": ["node"],
+    "allowJs": true
+  },
+  "include": ["src/**/*"]
+}
