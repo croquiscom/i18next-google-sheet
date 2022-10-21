@@ -1,6 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { debug } from 'debug';
+import mkdirp from 'mkdirp';
 import { FileLocale } from './fileLocale';
 
 const debugLog = debug('i18next-google-sheet:fileLocaleIO');
@@ -35,4 +36,18 @@ export async function loadFileLocale(locales_path: string): Promise<FileLocale> 
     locales[file.name] = await scanDir(file_path);
   }
   return locales;
+}
+
+export async function saveFileLocale(locales_path: string, file_locale: FileLocale): Promise<void> {
+  debug('Updating filesystem locales');
+  for (const locale_name in file_locale) {
+    const locale_data = file_locale[locale_name];
+    for (const namespace_name in locale_data) {
+      const namespace_data = locale_data[namespace_name];
+      const file_path = path.resolve(locales_path, locale_name, namespace_name + '.json');
+      const [, dir_path] = /^(.+)\/([^/]+)$/.exec(file_path)!;
+      await mkdirp(dir_path);
+      await fs.writeFile(file_path, JSON.stringify(namespace_data, null, 2) + '\n', 'utf-8');
+    }
+  }
 }

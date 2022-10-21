@@ -104,7 +104,7 @@ function getRangeMin(range: string): { namespace: string, row: number, column: n
 
 const INSERT_PAGE_SIZE = 10000;
 
-export async function saveSheetLocales(
+export async function saveSheetLocale(
   sheets: sheets_v4.Sheets,
   spreadsheet_id: string,
   range: string,
