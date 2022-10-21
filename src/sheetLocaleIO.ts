@@ -63,7 +63,7 @@ export async function loadSheetLocale(
 
 const COLUMN_LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-function getA1Notation(column: number, row: number) {
+function toA1Notation(column: number, row: number) {
   const column_arr = [];
   let column_val = column - 1;
   do {
@@ -71,6 +71,35 @@ function getA1Notation(column: number, row: number) {
     column_val = Math.floor(column_val / COLUMN_LETTERS.length);
   } while (column_val > 0);
   return column_arr.join('') + row.toString(10);
+}
+
+function fromA1Notation(input: string): { column: number | null, row: number | null } {
+  const match = /^([A-Z]+)?([0-9]+)?$/.exec(input.toUpperCase());
+  if (match == null) throw new Error(`${input} is not parsable notation`);
+  const [, column_str, row_str] = match;
+  let column: number | null = null;
+  if (column_str) {
+    column = column_str.split('').reduce((prev, letter) => {
+      return prev * COLUMN_LETTERS.length + (letter.charCodeAt(0) - 'A'.charCodeAt(0));
+    }, 0) + 1;
+  }
+  let row: number | null = null;
+  if (row_str) {
+    row = parseInt(row_str);
+  }
+  return { column, row };
+}
+
+function getRangeMin(range: string): { namespace: string, row: number, column: number } {
+  const match = /^('(?:[^']|'')+'|[^! ']+)?(?:!([A-Z]+|[0-9]+|[A-Z]+[0-9]+)(?::([A-Z]+|[0-9]+|[A-Z]+[0-9]+))?)?$/.exec(range);
+  if (match == null) throw new Error(`${range} is not parsable range`);
+  const [, namespace, min] = match;
+  const min_addr = fromA1Notation(min);
+  return {
+    namespace,
+    row: min_addr.row ?? 1,
+    column: min_addr.column ?? 1,
+  };
 }
 
 const INSERT_PAGE_SIZE = 10000;
@@ -83,12 +112,15 @@ export async function saveSheetLocales(
   sheet_locale: SheetLocale,
 ) {
   debug('Determining rows to update');
+  const range_min = getRangeMin(range);
   const update_ranges = sheet_locale.entries
     .filter((entry) => entry.has_changed && entry.row_id != null)
     .map((entry) => {
-      const actual_row = entry.row_id! + 2;
+      const actual_row = entry.row_id! + 1;
       return {
-        range: `'문자열 목록'!${getA1Notation(1, actual_row)}:${getA1Notation(columns.length, actual_row)}`,
+        range: range_min.namespace + '!' + 
+          toA1Notation(range_min.column, range_min.row + actual_row) + ':' +
+          toA1Notation(range_min.column + columns.length - 1, range_min.row + actual_row),
         majorDimension: 'ROWS',
         values: [columns.map((key, i) => {
           if (key != null) {
@@ -136,7 +168,7 @@ export async function saveSheetLocales(
       debugLog('Appending', index, '...', index + INSERT_PAGE_SIZE);
       await sheets.spreadsheets.values.append({
         spreadsheetId: spreadsheet_id,
-        range: `'문자열 목록'`,
+        range,
         valueInputOption: 'USER_ENTERED',
         insertDataOption: 'INSERT_ROWS',
         requestBody: {
