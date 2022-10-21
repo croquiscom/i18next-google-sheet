@@ -4,7 +4,7 @@ import { FileLocale, FileLocaleLang, FileLocaleNamespace } from './fileLocale';
 import { SUFFIX_MAP_REV } from './mapping';
 import { SheetLocale } from './sheetLocale';
 
-const debugLog = debug('i18next-google-sheet:visit');
+const debugLog = debug('i18next-google-sheet:visitor');
 
 export function visitLocaleNamespace(
   lang_name: string,
@@ -12,7 +12,6 @@ export function visitLocaleNamespace(
   namespace_data: FileLocaleNamespace,
   sheet_locale: SheetLocale,
 ) {
-  debugLog('Visiting', lang_name, namespace_name);
   for (const entry_key in namespace_data) {
     const [, key, suffix] = /^((?:.|\r|\n)+?)(?:_([a-z]+))?$/.exec(entry_key)!;
     // 스프레드시트에 데이터 있는지 체크
@@ -36,11 +35,16 @@ export function visitLocaleNamespace(
         raw_values: null,
       };
       sheet_locale.insert(sheet_entry);
+      debugLog('Creating new entry', key);
+      console.log('Creating new entry', sheet_locale.getIndexKey(sheet_entry));
     }
     const target_value = sheet_entry.values[lang_name];
     if (target_value != null && target_value.trim() !== '') {
       // 업데이트된 데이터 반영
-      namespace_data[entry_key] = target_value;
+      if (namespace_data[entry_key] !== target_value) {
+        console.log('Updating record', lang_name, sheet_locale.getIndexKey(sheet_entry));
+        namespace_data[entry_key] = target_value;
+      }
     }
     if (target_value == null) {
       // 현재 언어 값 설정
@@ -51,6 +55,7 @@ export function visitLocaleNamespace(
       // 문서에 사용하지 않는다고 마킹된 경우 다시 마킹
       sheet_entry.values.used = 'TRUE';
       sheet_entry.has_changed = true;
+      console.log('Remarking entry', sheet_locale.getIndexKey(sheet_entry));
     }
     sheet_entry.has_visited = true;
   }

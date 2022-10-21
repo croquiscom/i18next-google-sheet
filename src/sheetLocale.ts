@@ -5,7 +5,7 @@ export class SheetLocale {
   index: Map<string, SheetEntry> = new Map();
 
   getIndexKey(key: SheetEntryKey): string {
-    let index_key = key.namespace + '$$' + key.key.trim();
+    let index_key = key.namespace + '::' + key.key.trim();
     if (key.suffix) {
       index_key += '_' + key.suffix;
     }

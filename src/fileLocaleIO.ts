@@ -39,7 +39,7 @@ export async function loadFileLocale(locales_path: string): Promise<FileLocale> 
 }
 
 export async function saveFileLocale(locales_path: string, file_locale: FileLocale): Promise<void> {
-  debug('Updating filesystem locales');
+  debugLog('Updating filesystem locales');
   for (const locale_name in file_locale) {
     const locale_data = file_locale[locale_name];
     for (const namespace_name in locale_data) {

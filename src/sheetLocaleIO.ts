@@ -112,7 +112,7 @@ export async function saveSheetLocale(
   columns: SheetColumns,
   sheet_locale: SheetLocale,
 ) {
-  debug('Determining rows to update');
+  debugLog('Determining rows to update');
   const range_min = getRangeMin(range);
   const update_ranges = sheet_locale.entries
     .filter((entry) => entry.has_changed && entry.row_id != null)
@@ -148,9 +148,9 @@ export async function saveSheetLocale(
       }, {});
     }
   } else {
-    debug('No rows to update');
+    debugLog('No rows to update');
   }
-  debug('Determining rows to append');
+  debugLog('Determining rows to append');
   const append_values = sheet_locale.entries
     .filter((entry) => entry.has_changed && entry.row_id == null)
     .map((entry) => columns.map((key, i) => {
@@ -178,6 +178,6 @@ export async function saveSheetLocale(
       }, {});
     }
   } else {
-    debug('No rows to append');
+    debugLog('No rows to append');
   }
 }

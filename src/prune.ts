@@ -5,6 +5,7 @@ export function pruneSheetLocale(sheet_locale: SheetLocale) {
     if (!entry.has_visited && entry.values.used !== 'FALSE') {
       entry.values.used = 'FALSE';
       entry.has_changed = true;
+      console.log('Pruning entry', sheet_locale.getIndexKey(entry));
     }
   }
 }
