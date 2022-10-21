@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "",
   "main": "lib/index.js",
+  "bin": "lib/index.js",
   "scripts": {
     "build": "rimraf ./lib && tsc",
     "lint": "eslint ./src",
