@@ -94,7 +94,8 @@ function getRangeMin(range: string): { namespace: string, row: number, column: n
   const match = /^('(?:[^']|'')+'|[^! ']+)?(?:!([A-Z]+|[0-9]+|[A-Z]+[0-9]+)(?::([A-Z]+|[0-9]+|[A-Z]+[0-9]+))?)?$/.exec(range);
   if (match == null) throw new Error(`${range} is not parsable range`);
   const [, namespace, min] = match;
-  const min_addr = fromA1Notation(min);
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  const min_addr = fromA1Notation(min ?? '');
   return {
     namespace,
     row: min_addr.row ?? 1,
