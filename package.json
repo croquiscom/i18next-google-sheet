@@ -5,6 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "build": "rimraf ./lib && tsc",
+    "lint": "eslint ./src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -17,7 +18,12 @@
     "yargs": "^17.6.0"
   },
   "devDependencies": {
+    "@croquiscom/eslint-config-www": "^1.10.0",
     "@types/node": "^18.11.3",
+    "eslint": "^8.25.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-import-resolver-typescript": "^3.5.2",
+    "eslint-plugin-import": "^2.26.0",
     "rimraf": "^3.0.2",
     "typescript": "^4.8.4"
   }
