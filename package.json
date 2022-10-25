@@ -16,6 +16,10 @@
   },
   "author": "",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
   "dependencies": {
     "dayjs": "^1.11.6",
     "googleapis": "^108.0.0",
