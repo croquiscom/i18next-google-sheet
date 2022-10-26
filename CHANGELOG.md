@@ -1,5 +1,11 @@
 # i18next-google-sheet
 
+## 0.3.0
+
+### Minor Changes
+
+- 1d94dcf: API를 활용한 실행 방법 추가
+
 ## 0.2.0
 
 ### Minor Changes
