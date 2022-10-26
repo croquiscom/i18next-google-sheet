@@ -2,12 +2,16 @@
   "name": "i18next-google-sheet",
   "version": "0.1.2",
   "description": "i18next Google spreadsheet sync tool",
-  "main": "lib/index.js",
-  "bin": "bin/index.js",
+  "exports": "./lib/index.js",
+  "bin": "bin/index.mjs",
   "files": [
     "lib/**/*",
     "bin/**/*"
   ],
+  "type": "module",
+  "engines": {
+    "node": ">=14"
+  },
   "scripts": {
     "build": "rimraf ./lib && tsc",
     "lint": "eslint ./src",
@@ -21,10 +25,12 @@
     "registry": "https://registry.npmjs.org"
   },
   "dependencies": {
+    "chalk": "^5.1.2",
     "dayjs": "^1.11.6",
     "googleapis": "^108.0.0",
     "lodash": "^4.17.21",
     "mkdirp": "^1.0.4",
+    "ora": "^6.1.2",
     "yargs": "^17.6.0"
   },
   "devDependencies": {
