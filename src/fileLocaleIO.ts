@@ -1,8 +1,8 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { debug } from 'debug';
+import debug from 'debug';
 import mkdirp from 'mkdirp';
-import { FileLocale } from './fileLocale';
+import { FileLocale } from './fileLocale.js';
 
 const debugLog = debug('i18next-google-sheet:fileLocaleIO');
 

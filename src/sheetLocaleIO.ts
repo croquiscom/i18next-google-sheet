@@ -1,8 +1,8 @@
 import debug from 'debug';
 import { sheets_v4 } from 'googleapis';
-import { COLUMN_MAP, SUFFIX_MAP } from './mapping';
-import { SheetEntry, SheetEntryValues } from './sheetEntry';
-import { SheetLocale } from './sheetLocale';
+import { COLUMN_MAP, SUFFIX_MAP } from './mapping.js';
+import { SheetEntry, SheetEntryValues } from './sheetEntry.js';
+import { SheetLocale } from './sheetLocale.js';
 
 const debugLog = debug('i18next-google-sheet:sheetLocaleIO');
 

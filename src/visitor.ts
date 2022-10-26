@@ -1,8 +1,10 @@
+import chalk from 'chalk';
 import dayjs from 'dayjs';
-import { debug } from 'debug';
-import { FileLocale, FileLocaleLang, FileLocaleNamespace } from './fileLocale';
-import { SUFFIX_MAP_REV } from './mapping';
-import { SheetLocale } from './sheetLocale';
+import debug from 'debug';
+import { FileLocale, FileLocaleLang, FileLocaleNamespace } from './fileLocale.js';
+import { SUFFIX_MAP_REV } from './mapping.js';
+import { SheetLocale } from './sheetLocale.js';
+import { truncateKey } from './utils.js';
 
 const debugLog = debug('i18next-google-sheet:visitor');
 
@@ -36,13 +38,13 @@ export function visitLocaleNamespace(
       };
       sheet_locale.insert(sheet_entry);
       debugLog('Creating new entry', key);
-      console.log('Creating new entry', sheet_locale.getIndexKey(sheet_entry));
+      console.log(chalk.green('+ creating'), truncateKey(sheet_locale.getIndexKey(sheet_entry)));
     }
     const target_value = sheet_entry.values[lang_name];
     if (target_value != null && target_value.trim() !== '') {
       // 업데이트된 데이터 반영
       if (namespace_data[entry_key] !== target_value) {
-        console.log('Updating record', lang_name, sheet_locale.getIndexKey(sheet_entry));
+        console.log(chalk.blue('~ updating'), truncateKey(sheet_locale.getIndexKey(sheet_entry)), lang_name);
         namespace_data[entry_key] = target_value;
       }
     }
@@ -55,7 +57,7 @@ export function visitLocaleNamespace(
       // 문서에 사용하지 않는다고 마킹된 경우 다시 마킹
       sheet_entry.values.used = 'TRUE';
       sheet_entry.has_changed = true;
-      console.log('Remarking entry', sheet_locale.getIndexKey(sheet_entry));
+      console.log(chalk.yellow('~ marking as used'), truncateKey(sheet_locale.getIndexKey(sheet_entry)));
     }
     sheet_entry.has_visited = true;
   }

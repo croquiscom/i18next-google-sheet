@@ -1,4 +1,4 @@
-import { SheetEntry, SheetEntryKey } from './sheetEntry';
+import { SheetEntry, SheetEntryKey } from './sheetEntry.js';
 
 export class SheetLocale {
   entries: SheetEntry[] = [];

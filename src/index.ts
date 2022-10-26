@@ -1,10 +1,11 @@
 import { google } from 'googleapis';
+import { oraPromise } from 'ora';
 import yargs from 'yargs';
-import { loadFileLocale, saveFileLocale } from './fileLocaleIO';
-import { createGoogleAuth } from './googleAuth';
-import { pruneSheetLocale } from './prune';
-import { loadSheetLocale, saveSheetLocale } from './sheetLocaleIO';
-import { visitLocale } from './visitor';
+import { loadFileLocale, saveFileLocale } from './fileLocaleIO.js';
+import { createGoogleAuth } from './googleAuth.js';
+import { pruneSheetLocale } from './prune.js';
+import { loadSheetLocale, saveSheetLocale } from './sheetLocaleIO.js';
+import { visitLocale } from './visitor.js';
 
 async function main() {
   const argv = await yargs(process.argv.slice(2))
@@ -37,16 +38,24 @@ async function main() {
     .argv;
   const googleClient = await createGoogleAuth(argv.credentialsFile, argv.credentialsJson);
   const sheets = google.sheets({ version: 'v4', auth: googleClient });
-  console.log('Loading file locales...');
-  const file_locale = await loadFileLocale(argv.path);
-  console.log('Loading sheet locales...');
-  const { columns, locale: sheet_locale } = await loadSheetLocale(sheets, argv.spreadsheetId, argv.range);
+  const file_locale = await oraPromise(
+    loadFileLocale(argv.path),
+    'Loading file locales',
+  );
+  const { columns, locale: sheet_locale } = await oraPromise(
+    loadSheetLocale(sheets, argv.spreadsheetId, argv.range),
+    'Loading sheet locales',
+  );
   visitLocale(file_locale, sheet_locale);
   pruneSheetLocale(sheet_locale);
-  console.log('Saving file locales...');
-  await saveFileLocale(argv.path, file_locale);
-  console.log('Saving sheet locales...');
-  await saveSheetLocale(sheets, argv.spreadsheetId, argv.range, columns, sheet_locale);
+  await oraPromise(
+    saveFileLocale(argv.path, file_locale),
+    'Saving file locales',
+  );
+  await oraPromise(
+    saveSheetLocale(sheets, argv.spreadsheetId, argv.range, columns, sheet_locale),
+    'Saving sheet locales',
+  );
 }
 
 main();
