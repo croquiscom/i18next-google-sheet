@@ -1,5 +1,12 @@
 # i18next-google-sheet
 
+## 0.2.0
+
+### Minor Changes
+
+- e555b8a: 콘솔 출력 컬러로 나오도록 ora, chalk 추가
+- e555b8a: ESM 사용하도록 패키지 구성 수정
+
 ## 0.1.2
 
 ### Patch Changes
