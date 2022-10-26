@@ -70,3 +70,29 @@ i18next-google-sheet는 아래와 같은 파라미터를 받습니다.
 - `credentials-json` - (택1) 구글 API 콘솔에서 받은 credentials JSON 본문
 
 JSON의 경우에는 `I18NEXT_CREDENTIALS_JSON`와 같은 환경변수로도 전달할 수 있습니다.
+
+### API 사용법
+
+```js
+import { i18nextGoogleSheet } from 'i18next-google-sheet';
+
+const stats = await i18nextGoogleSheet({
+  path: 'locales/',
+  range: '시트1',
+  spreadsheetId: 'ABCDEFG1234567',
+  credentialsFile: './credentials.json',
+});
+```
+
+stats 객체에는 아래와 같은 항목들이 포함되어 반환됩니다.
+
+- `added`: 시트에 새로 추가된 항목
+  - `count`: 영향받은 항목 개수
+  - `namespaces`: 영향받은 네임스페이스 Set
+  - (이하 동일)
+- `updated`: 번역 파일이 업데이트된 항목
+- `reused`: 번역 파일에 다시 추가되어, 시트에서 "사용 여부"가 체크 해제되었다가 다시 체크된 항목
+- `pruned`: 번역 파일에서 사라져서, 시트에서 "사용 여부"가 체크 해제된 항목
+
+i18next-google-sheet는 ESM (`type: module`)을 사용하기 때문에, 사용하는 쪽에서도 이를
+감안해서 사용해야 합니다. 

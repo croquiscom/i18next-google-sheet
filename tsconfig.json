@@ -11,7 +11,8 @@
     "outDir": "lib",
     "rootDir": "src",
     "types": ["node"],
-    "allowJs": true
+    "allowJs": true,
+    "declaration": true
   },
   "include": ["src/**/*"]
 }
