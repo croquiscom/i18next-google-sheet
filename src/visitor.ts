@@ -4,6 +4,7 @@ import debug from 'debug';
 import { FileLocale, FileLocaleLang, FileLocaleNamespace } from './fileLocale.js';
 import { SUFFIX_MAP_REV } from './mapping.js';
 import { SheetLocale } from './sheetLocale.js';
+import { ProcessStats } from './types.js';
 import { truncateKey } from './utils.js';
 
 const debugLog = debug('i18next-google-sheet:visitor');
@@ -13,6 +14,7 @@ export function visitLocaleNamespace(
   namespace_name: string,
   namespace_data: FileLocaleNamespace,
   sheet_locale: SheetLocale,
+  stats: ProcessStats,
 ) {
   for (const entry_key in namespace_data) {
     const [, key, suffix] = /^((?:.|\r|\n)+?)(?:_([a-z]+))?$/.exec(entry_key)!;
@@ -39,6 +41,8 @@ export function visitLocaleNamespace(
       sheet_locale.insert(sheet_entry);
       debugLog('Creating new entry', key);
       console.log(chalk.green('+ creating'), truncateKey(sheet_locale.getIndexKey(sheet_entry)));
+      stats.added.count += 1;
+      stats.added.namespaces.add(sheet_entry.namespace);
     }
     const target_value = sheet_entry.values[lang_name];
     if (target_value != null && target_value.trim() !== '') {
@@ -46,6 +50,8 @@ export function visitLocaleNamespace(
       if (namespace_data[entry_key] !== target_value) {
         console.log(chalk.blue('~ updating'), truncateKey(sheet_locale.getIndexKey(sheet_entry)), lang_name);
         namespace_data[entry_key] = target_value;
+        stats.updated.count += 1;
+        stats.updated.namespaces.add(sheet_entry.namespace);
       }
     }
     if (target_value == null) {
@@ -58,20 +64,22 @@ export function visitLocaleNamespace(
       sheet_entry.values.used = 'TRUE';
       sheet_entry.has_changed = true;
       console.log(chalk.yellow('~ marking as used'), truncateKey(sheet_locale.getIndexKey(sheet_entry)));
+      stats.reused.count += 1;
+      stats.reused.namespaces.add(sheet_entry.namespace);
     }
     sheet_entry.has_visited = true;
   }
 }
 
-function visitLocaleLang(lang_name: string, lang_data: FileLocaleLang, sheet_locale: SheetLocale) {
+function visitLocaleLang(lang_name: string, lang_data: FileLocaleLang, sheet_locale: SheetLocale, stats: ProcessStats) {
   for (const namespace_name in lang_data) {
     const namespace_data = lang_data[namespace_name];
-    visitLocaleNamespace(lang_name, namespace_name, namespace_data, sheet_locale);
+    visitLocaleNamespace(lang_name, namespace_name, namespace_data, sheet_locale, stats);
   }
 }
 
-export function visitLocale(file_locale: FileLocale, sheet_locale: SheetLocale) {
+export function visitLocale(file_locale: FileLocale, sheet_locale: SheetLocale, stats: ProcessStats) {
   for (const lang_name in file_locale) {
-    visitLocaleLang(lang_name, file_locale[lang_name], sheet_locale);
+    visitLocaleLang(lang_name, file_locale[lang_name], sheet_locale, stats);
   }
 }

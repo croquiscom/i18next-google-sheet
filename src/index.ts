@@ -1,61 +1,43 @@
 import { google } from 'googleapis';
 import { oraPromise } from 'ora';
-import yargs from 'yargs';
 import { loadFileLocale, saveFileLocale } from './fileLocaleIO.js';
 import { createGoogleAuth } from './googleAuth.js';
 import { pruneSheetLocale } from './prune.js';
 import { loadSheetLocale, saveSheetLocale } from './sheetLocaleIO.js';
+import { createProcessStats, ProcessStats } from './types.js';
 import { visitLocale } from './visitor.js';
 
-async function main() {
-  const argv = await yargs(process.argv.slice(2))
-    .option('path', {
-      alias: 'p',
-      describe: '로컬 locales 폴더 경로',
-      type: 'string',
-    })
-    .option('range', {
-      describe: '구글 시트에서 스캔할 범위',
-      default: '시트1',
-      type: 'string',
-    })
-    .option('spreadsheet-id', {
-      describe: '구글 시트 문서 ID',
-      type: 'string',
-    })
-    .option('credentials-file', {
-      describe: '구글 API 인증 파일',
-      type: 'string',
-    })
-    .option('credentials-json', {
-      describe: '구글 API 인증 JSON',
-      type: 'string',
-    })
-    .demandOption(['path', 'range', 'spreadsheet-id'])
-    .env('I18NEXT')
-    .help('h')
-    .alias('h', 'help')
-    .argv;
-  const googleClient = await createGoogleAuth(argv.credentialsFile, argv.credentialsJson);
+export interface I18nextGoogleSheetOptions {
+  path: string;
+  range: string;
+  spreadsheet_id: string;
+  credentials_file?: string;
+  credentials_json?: string; 
+}
+
+export async function i18nextGoogleSheet(options: I18nextGoogleSheetOptions): Promise<ProcessStats> {
+  const stats = createProcessStats();
+  const googleClient = await createGoogleAuth(options.credentials_file, options.credentials_json);
   const sheets = google.sheets({ version: 'v4', auth: googleClient });
   const file_locale = await oraPromise(
-    loadFileLocale(argv.path),
+    loadFileLocale(options.path),
     'Loading file locales',
   );
   const { columns, locale: sheet_locale } = await oraPromise(
-    loadSheetLocale(sheets, argv.spreadsheetId, argv.range),
+    loadSheetLocale(sheets, options.spreadsheet_id, options.range),
     'Loading sheet locales',
   );
-  visitLocale(file_locale, sheet_locale);
-  pruneSheetLocale(sheet_locale);
+  visitLocale(file_locale, sheet_locale, stats);
+  pruneSheetLocale(sheet_locale, stats);
   await oraPromise(
-    saveFileLocale(argv.path, file_locale),
+    saveFileLocale(options.path, file_locale),
     'Saving file locales',
   );
   await oraPromise(
-    saveSheetLocale(sheets, argv.spreadsheetId, argv.range, columns, sheet_locale),
+    saveSheetLocale(sheets, options.spreadsheet_id, options.range, columns, sheet_locale),
     'Saving sheet locales',
   );
+  return stats;
 }
 
-main();
+export default i18nextGoogleSheet;
