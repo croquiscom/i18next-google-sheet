@@ -19,6 +19,10 @@ export async function loadFileLocale(locales_path: string): Promise<FileLocale> 
           // 삭제될 파일로 스킵
           continue;
         }
+        if (!file.name.endsWith('.json')) {
+          // JSON이 아니므로 스킵
+          continue;
+        }
         const str = await fs.readFile(file_path, 'utf-8');
         const json = JSON.parse(str);
         const file_key = [...current_prefix, file.name.replace(/\.json$/, '')];
