@@ -17,7 +17,7 @@ export function visitLocaleNamespace(
   stats: ProcessStats,
 ) {
   for (const entry_key in namespace_data) {
-    const [, key, suffix] = /^((?:.|\r|\n)+?)(?:_([a-z]+))?$/.exec(entry_key)!;
+    const [, key, suffix] = /^((?:.|\r|\n)*?)(?:_([a-z]+))?$/.exec(entry_key)!;
     // 스프레드시트에 데이터 있는지 체크
     let sheet_entry = sheet_locale.get({ namespace: namespace_name, key, suffix });
     if (sheet_entry == null) {
