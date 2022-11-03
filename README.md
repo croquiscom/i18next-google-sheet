@@ -44,12 +44,9 @@ i18next-google-sheet는 시트에서 번역 문자열을 인식할 범위를 따
 시트 이름만 지정해주면 됩니다.
 
 ### 구글 시트 API 키 받기
-시트 API 키를 새로 발급받아야 한다면 다음 문서를 참고해주세요.
-https://www.notion.so/croquis/API-967b762f901f452eae17c100a4306663
+https://cloud.google.com/iam/docs/creating-managing-service-account-keys
 
-한편, 사내에서 굳이 시트 계정을 나눠가면서 사용할 필요는 없기도 하고, 명시적으로 공유한 시트에만
-권한이 부여되는 만큼 공통 계정을 따로 만들어놓고 API 키를 필요할 때마다 발급하거나, 공유해주는 
-방법으로도 괜찮다고 생각이 듭니다. 키가 필요하시다면 따로 DM으로 문의 주세요!
+위 문서를 참고하여 구글 시트를 접근할 수 있는 서비스 계정을 생성하고, JSON 키를 받아와야 합니다.
 
 ### i18next-parser 실행
 i18next-google-sheet는 이미 생성된 locales 파일에 의존하기 때문에, i18next-parser 등의
