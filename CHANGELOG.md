@@ -1,5 +1,11 @@
 # i18next-google-sheet
 
+## 0.4.0
+
+### Minor Changes
+
+- a1e5234: OAuth 로그인 프로세스 추가
+
 ## 0.3.1
 
 ### Patch Changes
