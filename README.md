@@ -44,9 +44,27 @@ i18next-google-sheet는 시트에서 번역 문자열을 인식할 범위를 따
 시트 이름만 지정해주면 됩니다.
 
 ### 구글 시트 API 키 받기
+
+#### 서비스 계정 사용
 https://cloud.google.com/iam/docs/creating-managing-service-account-keys
 
 위 문서를 참고하여 구글 시트를 접근할 수 있는 서비스 계정을 생성하고, JSON 키를 받아와야 합니다.
+
+#### OAuth 사용
+사용자의 컴퓨터에서 직접 스크립트를 실행하는 경우 OAuth를 사용할 수도 있습니다. 앱에 기본적으로
+OAuth 키가 내장되어 있지만, 현재로써는 내부 사용자만 사용할 수 있게 되어 있기 때문에 외부에서는
+사용할 수 없습니다.
+
+`i18next-google-sheet`를 실행할 때 `credentials-file`, `credentials-json`을 넣지 않는
+경우에 알아서 OAuth 로그인 프로세스를 실행하게 됩니다.
+
+한 번 인증을 완료한 경우에는 `.config/i18next-google-sheet-nodejs/credentials.json`에
+인증 정보가 저장됩니다.
+
+https://cloud.google.com/nodejs/docs/reference/google-auth-library/latest#oauth2
+
+필요한 경우 위 문서를 참고하여 직접 OAuth 키를 발급하여, `oauth-client-file`을 통해
+경로를 지정하여 사용할 수 있습니다.
 
 ### i18next-parser 실행
 i18next-google-sheet는 이미 생성된 locales 파일에 의존하기 때문에, i18next-parser 등의
@@ -63,8 +81,9 @@ i18next-google-sheet는 아래와 같은 파라미터를 받습니다.
 - `path` - `ko/common.json` 과 같은 JSON 파일이 들어있는 locales 디렉토리
 - `range` - 스프레드시트에서 데이터를 읽고 쓸 범위
 - `spreadsheet-id` - 스프레드시트 고유 ID
-- `credentials-file` - (택1) 구글 API 콘솔에서 받은 credentials JSON 파일 경로
-- `credentials-json` - (택1) 구글 API 콘솔에서 받은 credentials JSON 본문
+- `credentials-file` - (선택) 구글 API 콘솔에서 받은 credentials JSON 파일 경로
+- `credentials-json` - (선택) 구글 API 콘솔에서 받은 credentials JSON 본문
+- `oauth-client-file` - (선택) 구글 API OAuth 2.0 클라이언트 ID JSON 파일 경로
 
 JSON의 경우에는 `I18NEXT_CREDENTIALS_JSON`와 같은 환경변수로도 전달할 수 있습니다.
 
@@ -76,8 +95,8 @@ import { i18nextGoogleSheet } from 'i18next-google-sheet';
 const stats = await i18nextGoogleSheet({
   path: 'locales/',
   range: '시트1',
-  spreadsheetId: 'ABCDEFG1234567',
-  credentialsFile: './credentials.json',
+  spreadsheet_id: 'ABCDEFG1234567',
+  credentials_file: './credentials.json',
 });
 ```
 

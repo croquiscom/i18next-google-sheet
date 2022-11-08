@@ -12,7 +12,8 @@
     "rootDir": "src",
     "types": ["node"],
     "allowJs": true,
-    "declaration": true
+    "declaration": true,
+    "resolveJsonModule": true
   },
   "include": ["src/**/*"]
 }
