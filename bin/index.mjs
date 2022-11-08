@@ -33,6 +33,10 @@ async function main() {
       describe: '구글 API 인증 JSON',
       type: 'string',
     })
+    .option('oauth-client-file', {
+      describe: '구글 API OAuth 2.0 클라이언트 ID 파일',
+      type: 'string',
+    })
     .demandOption(['path', 'range', 'spreadsheet-id'])
     .env('I18NEXT')
     .help('h')
@@ -45,6 +49,7 @@ async function main() {
     spreadsheet_id: argv.spreadsheetId,
     credentials_file: argv.credentialsFile,
     credentials_json: argv.credentialsJson,
+    oauth_client_file: argv.oauthClientFile,
   });
 
   if (['added', 'updated', 'reused', 'pruned'].every((v) => stats[v].count === 0)) {

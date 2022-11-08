@@ -13,11 +13,16 @@ export interface I18nextGoogleSheetOptions {
   spreadsheet_id: string;
   credentials_file?: string;
   credentials_json?: string; 
+  oauth_client_file?: string;
 }
 
 export async function i18nextGoogleSheet(options: I18nextGoogleSheetOptions): Promise<ProcessStats> {
   const stats = createProcessStats();
-  const googleClient = await createGoogleAuth(options.credentials_file, options.credentials_json);
+  const googleClient = await createGoogleAuth(
+    options.credentials_file,
+    options.credentials_json,
+    options.oauth_client_file,
+  );
   const sheets = google.sheets({ version: 'v4', auth: googleClient });
   const file_locale = await oraPromise(
     loadFileLocale(options.path),
