@@ -14,6 +14,7 @@ export interface I18nextGoogleSheetOptions {
   credentials_file?: string;
   credentials_json?: string; 
   oauth_client_file?: string;
+  escape_non_printable_unicode_characters?: boolean;
 }
 
 export async function i18nextGoogleSheet(options: I18nextGoogleSheetOptions): Promise<ProcessStats> {
@@ -35,7 +36,7 @@ export async function i18nextGoogleSheet(options: I18nextGoogleSheetOptions): Pr
   visitLocale(file_locale, sheet_locale, stats);
   pruneSheetLocale(sheet_locale, stats);
   await oraPromise(
-    saveFileLocale(options.path, file_locale),
+    saveFileLocale(options.path, file_locale, options.escape_non_printable_unicode_characters),
     'Saving file locales',
   );
   await oraPromise(

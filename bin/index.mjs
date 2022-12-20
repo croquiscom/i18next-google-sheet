@@ -37,6 +37,11 @@ async function main() {
       describe: '구글 API OAuth 2.0 클라이언트 ID 파일',
       type: 'string',
     })
+    .option('escape-non-printable-unicode-characters', {
+      describe: '공백이나 컨트롤 문자 (\\u00a0 등)의 이스케이프 처리 여부',
+      type: 'boolean',
+      default: true
+    })
     .demandOption(['path', 'range', 'spreadsheet-id'])
     .env('I18NEXT')
     .help('h')
@@ -50,6 +55,7 @@ async function main() {
     credentials_file: argv.credentialsFile,
     credentials_json: argv.credentialsJson,
     oauth_client_file: argv.oauthClientFile,
+    escape_non_printable_unicode_characters: argv.escapeNonPrintableUnicodeCharacters,
   });
 
   if (['added', 'updated', 'reused', 'pruned'].every((v) => stats[v].count === 0)) {

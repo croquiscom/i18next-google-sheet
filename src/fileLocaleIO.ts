@@ -42,7 +42,11 @@ export async function loadFileLocale(locales_path: string): Promise<FileLocale> 
   return locales;
 }
 
-export async function saveFileLocale(locales_path: string, file_locale: FileLocale): Promise<void> {
+export async function saveFileLocale(
+  locales_path: string,
+  file_locale: FileLocale,
+  escape_non_printable_unicode_characters?: boolean,
+): Promise<void> {
   debugLog('Updating filesystem locales');
   for (const locale_name in file_locale) {
     const locale_data = file_locale[locale_name];
@@ -51,7 +55,16 @@ export async function saveFileLocale(locales_path: string, file_locale: FileLoca
       const file_path = path.resolve(locales_path, locale_name, namespace_name + '.json');
       const [, dir_path] = /^(.+)\/([^/]+)$/.exec(file_path)!;
       await mkdirp(dir_path);
-      await fs.writeFile(file_path, JSON.stringify(namespace_data, null, 2) + '\n', 'utf-8');
+      let output = JSON.stringify(namespace_data, null, 2) + '\n';
+      if (escape_non_printable_unicode_characters) {
+        // Convert non-printable Unicode characters to unicode escape sequence
+        // https://unicode.org/reports/tr18/#General_Category_Property
+        output = output.replace(/[\p{Z}\p{Cc}\p{Cf}]/gu, (chr) => {
+          const n = chr.charCodeAt(0)
+          return n < 128 ? chr : `\\u${`0000${n.toString(16)}`.substr(-4)}`
+        });
+      }
+      await fs.writeFile(file_path, output, 'utf-8');
     }
   }
 }
