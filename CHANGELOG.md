@@ -1,5 +1,11 @@
 # i18next-google-sheet
 
+## 0.5.0
+
+### Minor Changes
+
+- b108f6f: \\u00A0 등의 공백/컨트롤 문자 이스케이프 처리 여부 플래그 추가
+
 ## 0.4.0
 
 ### Minor Changes
