@@ -84,6 +84,7 @@ i18next-google-sheet는 아래와 같은 파라미터를 받습니다.
 - `credentials-file` - (선택) 구글 API 콘솔에서 받은 credentials JSON 파일 경로
 - `credentials-json` - (선택) 구글 API 콘솔에서 받은 credentials JSON 본문
 - `oauth-client-file` - (선택) 구글 API OAuth 2.0 클라이언트 ID JSON 파일 경로
+- `action` - (선택) 동기화 방식에 대한 옵션 - `sync` | `push` | `pull` (default: `sync`)
 
 JSON의 경우에는 `I18NEXT_CREDENTIALS_JSON`와 같은 환경변수로도 전달할 수 있습니다.
 
