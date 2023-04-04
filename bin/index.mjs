@@ -42,6 +42,11 @@ async function main() {
       type: 'boolean',
       default: true
     })
+    .option('action', {
+      describe: 'sync, push, pull등의 동기화 action type',
+      type: 'string',
+      default: 'sync'
+    })
     .demandOption(['path', 'range', 'spreadsheet-id'])
     .env('I18NEXT')
     .help('h')
@@ -56,6 +61,7 @@ async function main() {
     credentials_json: argv.credentialsJson,
     oauth_client_file: argv.oauthClientFile,
     escape_non_printable_unicode_characters: argv.escapeNonPrintableUnicodeCharacters,
+    action: argv.action,
   });
 
   if (['added', 'updated', 'reused', 'pruned'].every((v) => stats[v].count === 0)) {

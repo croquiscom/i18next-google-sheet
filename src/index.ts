@@ -15,6 +15,7 @@ export interface I18nextGoogleSheetOptions {
   credentials_json?: string; 
   oauth_client_file?: string;
   escape_non_printable_unicode_characters?: boolean;
+  action?: 'sync' | 'push' | 'pull'
 }
 
 export async function i18nextGoogleSheet(options: I18nextGoogleSheetOptions): Promise<ProcessStats> {
@@ -35,14 +36,23 @@ export async function i18nextGoogleSheet(options: I18nextGoogleSheetOptions): Pr
   );
   visitLocale(file_locale, sheet_locale, stats);
   pruneSheetLocale(sheet_locale, stats);
-  await oraPromise(
-    saveFileLocale(options.path, file_locale, options.escape_non_printable_unicode_characters),
-    'Saving file locales',
-  );
-  await oraPromise(
-    saveSheetLocale(sheets, options.spreadsheet_id, options.range, columns, sheet_locale),
-    'Saving sheet locales',
-  );
+
+  switch (options.action) {
+    case 'pull':
+      await oraPromise(saveFileLocale(options.path, file_locale, options.escape_non_printable_unicode_characters), 'Saving file locales');
+      break;
+
+    case 'push':
+      await oraPromise(saveSheetLocale(sheets, options.spreadsheet_id, options.range, columns, sheet_locale), 'Saving sheet locales');
+      break;
+
+    case 'sync':
+    default:
+      await oraPromise(saveFileLocale(options.path, file_locale, options.escape_non_printable_unicode_characters), 'Saving file locales');
+      await oraPromise(saveSheetLocale(sheets, options.spreadsheet_id, options.range, columns, sheet_locale), 'Saving sheet locales');
+      break;
+  }
+
   return stats;
 }
 
