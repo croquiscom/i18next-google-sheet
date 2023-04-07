@@ -1,5 +1,11 @@
 # i18next-google-sheet
 
+## 0.6.0
+
+### Minor Changes
+
+- 56f6a98: sync, push, pull등의 동기화방식을 설정하는 action option 추가
+
 ## 0.5.0
 
 ### Minor Changes

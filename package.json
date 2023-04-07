@@ -1,6 +1,6 @@
 {
   "name": "i18next-google-sheet",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "i18next Google spreadsheet sync tool",
   "exports": "./lib/index.js",
   "bin": "bin/index.mjs",
